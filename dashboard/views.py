@@ -1,12 +1,18 @@
 from django.shortcuts import render
-
+import requests
+from django.conf import settings
 # Create your views here.
 def home(request):
-    """
-    Vista principal del dashboard que renderiza base.html
-    """
-    context = {
-        'title': 'Dashboard Principal',
-        'debug': 'Template renderizado correctamente'
+    response = requests.get(settings.API_URL)  # URL de la API
+    posts = response.json()  # Convertir la respuesta a JSON
+
+    # Número total de respuestas
+    total_responses = len(posts)
+    
+    data = {
+        'title': "Landing Page Dashboard :3",
+        'debug': 'Template renderizado correctamente',
+        'total_responses': total_responses,
+
     }
-    return render(request, 'dashboard/base.html', context)
+    return render(request, 'dashboard/index.html', data)
