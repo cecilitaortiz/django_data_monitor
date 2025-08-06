@@ -26,10 +26,12 @@ SECRET_KEY = 'django-insecure-6q3m90yref1fp2ymd(*^!!si47#(dp@2r&=4#df&!z+t$)j18x
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+
+CSRF_TRUSTED_ORIGINS = ["https://localhost:8000"]
 
 #API URL
-API_URL = 'https://jsonplaceholder.typicode.com/posts'
+API_URL = 'https://cecilitaortiz.pythonanywhere.com/landing/api/index/'
 
 # Application definition
 
@@ -42,6 +44,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'dashboard',
 ]
+# Fallo: acceso sin autenticación
+LOGIN_URL = '/login/'
+# Éxito: luego de autenticación exitosa
+LOGIN_REDIRECT_URL = '/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
