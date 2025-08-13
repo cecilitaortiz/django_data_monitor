@@ -38,6 +38,7 @@ def home(request):
         'product1_votes': product1_votes,
         'product2_votes': product2_votes,
         'current_winner': current_winner,
+        'responses': posts,  # Pasar todas las respuestas para la tabla
 
     }
     return render(request, 'dashboard/index.html', data)

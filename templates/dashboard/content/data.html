@@ -113,25 +113,36 @@
             <thead>
               <tr
                 class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
-                <th class="px-4 py-3">Columna 1</th>
-                <th class="px-4 py-3">Columna 2</th>
+                <th class="px-4 py-3">ID</th>
+                <th class="px-4 py-3">Producto</th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
 
               <!-- START - respuestas -->
+              {% for response in responses %}
               <tr class="text-gray-700 dark:text-gray-400">
                 <td class="px-4 py-3 text-sm">
-                  <!-- START - fila.valor1 -->
-                  fila.valor1
-                  <!-- END - fila.valor1 -->
+                  {{ response.id }}
                 </td>
                 <td class="px-4 py-3 text-sm">
-                  <!-- START - fila.valor2 -->
-                  fila.valor2
-                  <!-- END - fila.valor2 -->
+                  <span class="px-2 py-1 font-semibold leading-tight rounded-full
+                    {% if response.productID == 'product1' %}
+                      text-green-700 bg-green-100 dark:bg-green-700 dark:text-green-100
+                    {% else %}
+                      text-blue-700 bg-blue-100 dark:bg-blue-700 dark:text-blue-100
+                    {% endif %}">
+                    {{ response.productID|default:"N/A" }}
+                  </span>
                 </td>
               </tr>
+              {% empty %}
+              <tr class="text-gray-700 dark:text-gray-400">
+                <td colspan="5" class="px-4 py-3 text-sm text-center">
+                  No hay respuestas disponibles
+                </td>
+              </tr>
+              {% endfor %}
               <!-- END - respuestas -->
 
             </tbody>
@@ -141,7 +152,7 @@
           class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800">
           <span class="flex items-center col-span-3">
             <!-- START - # total de respuestas -->
-            XXX
+            {{ total_responses }}
             <!-- END - # total de respuestas -->
             respuestas
           </span>
@@ -151,11 +162,11 @@
 
       <!-- BEGIN - Gráficos -->
       <div class="row-span-1 grid gap-6 mb-8 md:grid-cols-12">
-        <div class="min-w-0 p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
+        <div class="min-w-0 p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800 md:col-span-12">
           <h4 class="mb-4 font-semibold text-gray-800 dark:text-gray-300">
-            Título del gráfico
+            Comparación de Votos por Producto
           </h4>
-          <canvas id="line"></canvas>
+          <canvas id="barChart"></canvas>
         </div>
       </div>
       <!-- END - Gráficos -->
@@ -164,3 +175,50 @@
 
   </div>
 </main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Gráfico de barras para comparar votos por producto
+  const ctx = document.getElementById('barChart').getContext('2d');
+  
+  // Datos desde Django
+  const product1Votes = {{ product1_votes|default:0 }};
+  const product2Votes = {{ product2_votes|default:0 }};
+  
+  const barChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Product 1', 'Product 2'],
+      datasets: [{
+        label: 'Número de Votos',
+        data: [product1Votes, product2Votes],
+        backgroundColor: [
+          'rgba(34, 197, 94, 0.8)',  // Verde para Product 1
+          'rgba(59, 130, 246, 0.8)'  // Azul para Product 2
+        ],
+        borderColor: [
+          'rgba(34, 197, 94, 1)',
+          'rgba(59, 130, 246, 1)'
+        ],
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top'
+        }
+      }
+    }
+  });
+</script>
